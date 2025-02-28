@@ -2,14 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using CustomExtensions;
 
-public class GameBehavior : MonoBehaviour
+public class GameBehavior : MonoBehaviour, IManager
 {
+    private string _state;
+
     public static bool showWinScreen = false;
     public static bool showLoseScreen = false;
     public static int staminaText;
     public static string detected = "HIDDEN";
     public static int bullets = 10;
+
+    public string State
+    {
+        get { return _state; }
+        set { _state = value; }
+    }
 
     void OnGUI()
     { 
@@ -25,28 +34,37 @@ public class GameBehavior : MonoBehaviour
 
         if (showWinScreen == true)
         {
-            GUI.Button(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 50, 200, 100), "YOU WON!");
             Time.timeScale = 0f;
+            if (GUI.Button(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 50, 200, 100), "YOU WON!"))
+            {
+                showWinScreen = false;
+                Utilities.RestartLevel(0);
+            }
         }
+
         if (showLoseScreen == true)
         {
-            GUI.Button(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 50, 200, 100), "YOU LOSE!");
             Time.timeScale = 0f;
+            if (GUI.Button(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 50, 200, 100), "YOU LOSE!"))
+            {
+                showLoseScreen = false;
+                Utilities.RestartLevel(0);
+            }
         }
     }
 
-    void RestartLevel()
+    public void Initialize()
     {
-        SceneManager.LoadScene(0);
-        Time.timeScale = 1.0f;
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+        _state = "Manager initialized..";
+        _state.FancyDebug();
+        Debug.Log(_state);
     }
 
-    // Update is called once per frame
+    void Start()
+    {
+        Initialize();
+    }
+
     void Update()
     {
         
